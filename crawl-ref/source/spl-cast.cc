@@ -67,6 +67,7 @@
 #include "spl-selfench.h"
 #include "spl-summoning.h"
 #include "spl-transloc.h"
+#include "spl-util.h"
 #include "spl-zap.h"
 #include "state.h"
 #include "stepdown.h"
@@ -116,11 +117,12 @@ void surge_power_wand(const int mp_cost)
     }
 }
 
-static string _spell_base_description(spell_type spell, bool viewing)
+static string _spell_base_description(spell_type spell, bool viewing, string action)
 {
     ostringstream desc;
 
-    int highlight =  spell_highlight_by_utility(spell, COL_UNKNOWN, !viewing);
+    int highlight = spell_highlight_by_utility(spell, COL_UNKNOWN, !viewing,
+                                               false, action);
     if (you.duration[DUR_ENKINDLED] && highlight == COL_UNKNOWN
         && spell_can_be_enkindled(spell))
     {
@@ -157,11 +159,12 @@ static string _spell_base_description(spell_type spell, bool viewing)
     return desc.str();
 }
 
-static string _spell_extra_description(spell_type spell, bool viewing)
+static string _spell_extra_description(spell_type spell, bool viewing, string action)
 {
     ostringstream desc;
 
-    int highlight =  spell_highlight_by_utility(spell, COL_UNKNOWN, !viewing);
+    int highlight = spell_highlight_by_utility(spell, COL_UNKNOWN, !viewing,
+                                               false, action);
     if (you.duration[DUR_ENKINDLED] && spell_can_be_enkindled(spell) && highlight == COL_UNKNOWN)
         highlight = LIGHTCYAN;
 
@@ -297,10 +300,11 @@ int list_spells(bool toggle_with_I, bool viewing, bool allow_preselect,
             continue;
 
         SpellMenuEntry* me =
-            new SpellMenuEntry(_spell_base_description(spell, viewing),
-                               _spell_extra_description(spell, viewing),
+            new SpellMenuEntry(_spell_base_description(spell, viewing, real_action),
+                               _spell_extra_description(spell, viewing, real_action),
                                MEL_ITEM, 1, letter);
-        me->colour = spell_highlight_by_utility(spell, COL_UNKNOWN, !viewing);
+        me->colour = spell_highlight_by_utility(spell, COL_UNKNOWN, !viewing,
+                                                 false, real_action);
         // TODO: maybe fill this from the quiver if there's a quivered spell and
         // no last cast one?
         if (allow_preselect && you.last_cast_spell == spell)

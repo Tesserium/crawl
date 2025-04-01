@@ -1586,13 +1586,14 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
  * Determines what colour a spell should be highlighted with.
  *
  * @param spell           The type of spell to be coloured.
- * @param default_colour   Colour to be used if the spell is unremarkable.
+ * @param default_colour  Colour to be used if the spell is unremarkable.
  * @param transient       If true, check if spell is temporarily useless.
  * @param memcheck        If true, check if spell can be memorised
+ * @param action          Don't bother whether useless when forgetting
  * @return                The colour to highlight the spell.
  */
 int spell_highlight_by_utility(spell_type spell, int default_colour,
-                               bool transient, bool memcheck)
+                               bool transient, bool memcheck, string action)
 {
     // If your god hates the spell, that overrides all other concerns.
     if (god_hates_spell(spell, you.religion)
@@ -1606,7 +1607,10 @@ int spell_highlight_by_utility(spell_type spell, int default_colour,
     {
         return COL_INAPPLICABLE;
     }
-    // Check if the spell is considered useless based on your current status
+    // But don't grey out useless spells if we're trying to forget one.
+    if (action == "forget")
+        return default_colour;
+    // Otherwise, check if the spell is considered useless based on your current status
     if (spell_is_useless(spell, transient))
         return COL_USELESS;
 

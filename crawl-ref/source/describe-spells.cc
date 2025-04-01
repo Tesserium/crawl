@@ -279,7 +279,7 @@ static vector<spell_type> _spellset_contents(const spellset &spells)
 }
 
 /**
- * What spell should a given colour be listed with?
+ * What colour should a given spell be listed with?
  *
  * @param spell         The spell in question.
  * @param source_item   The physical item holding the spells. May be null.
