@@ -343,6 +343,7 @@ namespace quiver
         void trigger(dist &t) override
         {
             set_target(t);
+
             if (!is_valid())
                 return;
             if (!is_enabled())
@@ -352,6 +353,16 @@ namespace quiver
             }
             if (autofight_check() || !do_inscription_check())
                 return;
+
+            monster* mons = monster_at(target.target);
+            if (mons != nullptr && is_valid_tempering_target(*mons, you)
+                && !you.confused())
+            {
+                mprf("You deconstruct %s.", mons->name(DESC_THE).c_str());
+                monster_die(*mons, KILL_RESET, NON_MONSTER);
+                you.turn_is_over = true;
+                return;
+            }
 
             throw_it(*this);
         }
