@@ -7699,6 +7699,9 @@ void mons_cast(monster* mons, bolt pbolt, spell_type spell_cast,
 
         sumcount2 = 1 + random2(mons->spell_hd(spell_cast) / 5 + 1);
 
+        // For test spawners, whose HD is too high.
+        sumcount2 = min(sumcount2, 4);
+
         for (sumcount = 0; sumcount < sumcount2; ++sumcount)
         {
             create_monster(
