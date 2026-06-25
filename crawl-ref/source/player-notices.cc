@@ -547,7 +547,7 @@ void update_monsters_in_view()
                 if (!(mi->flags & MF_WAS_IN_VIEW))
                 {
                     monsters.push_back(*mi);
-                    if (_monster_needs_warning(**mi) && !(mi->flags & MF_SEEN))
+                    if (_monster_needs_warning(**mi))
                         to_announce.push_back(*mi);
                 }
             }
